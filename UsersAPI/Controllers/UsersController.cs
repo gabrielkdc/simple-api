@@ -26,4 +26,16 @@ public class UsersController : ControllerBase
         }
         return BadRequest("Datos de usuario no válidos.");
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserDetails(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+
+        return Ok(user);
+    }
 }
