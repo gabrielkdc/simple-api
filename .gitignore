@@ -9,3 +9,7 @@ UsersAPI/obj
 .idea/.idea.UsersAPI/.idea/
 
 .vs/UsersAPI/FileContentIndex/
+
+*.bin
+
+*.v2

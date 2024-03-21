@@ -19,13 +19,23 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> RegisterUser(User user)
     {
-        if (ModelState.IsValid)
+        // Verificar si el modelo es vÃ¡lido
+        if (!ModelState.IsValid)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return Ok("Usuario registrado exitosamente.");
+            return BadRequest("Datos de usuario no vï¿½lidos.");
         }
-        return BadRequest("Datos de usuario no válidos.");
+
+        // Verificar si ya existe un usuario con el mismo nombre de usuario
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+        if (existingUser != null)
+        {
+            return Conflict("El nombre de usuario ya estï¿½ en uso.");
+        }
+
+        // Agregar el usuario a la base de datos
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return Ok("Usuario registrado exitosamente.");
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
@@ -39,6 +49,22 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+
+        if (!UserExists(id))
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+
+        var user = await _context.Users.FindAsync(id);
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+
+        return Ok("Usuario eliminado exitosamente.");
+    }
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, User user)
@@ -63,12 +89,14 @@ public class UsersController : ControllerBase
 
         return Ok("Usuario actualizado exitosamente.");
     }
-
+    
     private bool UserExists(int id)
     {
         return _context.Users.Any(e => e.Id == id);
     }
 
+
     
 }
     
+
