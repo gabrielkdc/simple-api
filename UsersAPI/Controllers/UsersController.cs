@@ -38,4 +38,24 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+
+        if (!UserExists(id))
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+
+        var user = await _context.Users.FindAsync(id);
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+
+        return Ok("Usuario eliminado exitosamente.");
+    }
+    public bool UserExists(int id)
+    {
+        return _context.Users.Any(e => e.Id == id);
+    }
 }
+
