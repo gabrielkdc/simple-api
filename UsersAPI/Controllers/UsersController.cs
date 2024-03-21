@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
 
@@ -18,13 +19,23 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> RegisterUser(User user)
     {
-        if (ModelState.IsValid)
+        // Verificar si el modelo es válido
+        if (!ModelState.IsValid)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return Ok("Usuario registrado exitosamente.");
+            return BadRequest("Datos de usuario no válidos.");
         }
-        return BadRequest("Datos de usuario no válidos.");
+
+        // Verificar si ya existe un usuario con el mismo nombre de usuario
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+        if (existingUser != null)
+        {
+            return Conflict("El nombre de usuario ya está en uso.");
+        }
+
+        // Agregar el usuario a la base de datos
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return Ok("Usuario registrado exitosamente.");
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
