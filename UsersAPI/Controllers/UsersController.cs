@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
 
@@ -38,4 +39,41 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, User user)
+    {
+        if (id != user.Id)
+        {
+            return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
+        }
+
+        _context.Entry(user).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!UserExists(id))
+            {
+                return NotFound("Usuario no encontrado.");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return Ok("Usuario actualizado exitosamente.");
+    }
+
+    private bool UserExists(int id)
+    {
+        return _context.Users.Any(e => e.Id == id);
+    }
+
+    
 }
+    
