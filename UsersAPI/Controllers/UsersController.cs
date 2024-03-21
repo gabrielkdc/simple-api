@@ -49,22 +49,17 @@ public class UsersController : ControllerBase
         }
 
         _context.Entry(user).State = EntityState.Modified;
+    
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
             if (!UserExists(id))
             {
                 return NotFound("Usuario no encontrado.");
             }
             else
             {
-                throw;
+                await _context.SaveChangesAsync();
             }
-        }
+        
 
         return Ok("Usuario actualizado exitosamente.");
     }
