@@ -101,14 +101,5 @@ public class UsersController : ControllerBase
         var user = await _context.Users.ToListAsync();
         return Ok(user);
     }
-
-        var user = await _context.Users.ToListAsync();
-        return Ok(user);
-    }
->>>>>>> Stashed changes
-        var user = await _context.Users.ToListAsync();
-        return Ok(user);
-    }
->>>>>>> Stashed changes
 }
 
