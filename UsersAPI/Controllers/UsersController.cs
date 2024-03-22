@@ -64,12 +64,10 @@ public class UsersController : ControllerBase
 
         return Ok("Usuario eliminado exitosamente.");
     }
-<<<<<<< Updated upstream
-    public bool UserExists(int id)
+    private bool UserExists(int id)
     {
         return _context.Users.Any(e => e.Id == id);
     }
-=======
 
 
     [HttpPut("{id}")]
@@ -96,16 +94,13 @@ public class UsersController : ControllerBase
         return Ok("Usuario actualizado exitosamente.");
     }
 
-    private bool UserExists(int id)
-    {
-        return _context.Users.Any(e => e.Id == id);
-    }
-    [HttpGet("{id}")]
+
+    [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
         var user = await _context.Users.ToListAsync();
         return Ok(user);
     }
->>>>>>> Stashed changes
+
 }
 
