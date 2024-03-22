@@ -64,9 +64,48 @@ public class UsersController : ControllerBase
 
         return Ok("Usuario eliminado exitosamente.");
     }
+<<<<<<< Updated upstream
     public bool UserExists(int id)
     {
         return _context.Users.Any(e => e.Id == id);
     }
+=======
+
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, User user)
+    {
+        if (id != user.Id)
+        {
+            return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
+        }
+
+        _context.Entry(user).State = EntityState.Modified;
+
+
+        if (!UserExists(id))
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+        else
+        {
+            await _context.SaveChangesAsync();
+        }
+
+
+        return Ok("Usuario actualizado exitosamente.");
+    }
+
+    private bool UserExists(int id)
+    {
+        return _context.Users.Any(e => e.Id == id);
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var user = await _context.Users.ToListAsync();
+        return Ok(user);
+    }
+>>>>>>> Stashed changes
 }
 
