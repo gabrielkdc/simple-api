@@ -99,8 +99,18 @@ public class UsersController : ControllerBase
         return _context.Users.Any(e => e.Id == id);
     }
 
+    [HttpGet("username/{username}")]
+    public async Task<IActionResult> GetUserByUsername(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-    
+        if (user == null)
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+
+        return Ok(user);
+    }
 }
     
 
