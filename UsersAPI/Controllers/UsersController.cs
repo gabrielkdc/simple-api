@@ -25,6 +25,10 @@ public class UsersController : ControllerBase
             return BadRequest("Datos de usuario no v�lidos.");
         }
 
+        // Eliminar espacios vacíos al principio y al final de los campos Name y Username
+        user.Name = user.Name?.Trim();
+        user.Username = user.Username?.Trim();
+
         // Verificar si ya existe un usuario con el mismo nombre de usuario
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
         if (existingUser != null)
