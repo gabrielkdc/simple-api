@@ -96,10 +96,24 @@ public class UsersController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers(string orderBy = "username")
     {
-        var user = await _context.Users.ToListAsync();
-        return Ok(user);
+        IQueryable<User> query = _context.Users;
+
+        switch (orderBy.ToLower())
+        {
+            case "username":
+                query = query.OrderBy(u => u.Username);
+                break;
+            case "name":
+                query = query.OrderBy(u => u.Name);
+                break;
+            default:
+                return BadRequest("El parámetro 'orderBy' solo puede ser 'username' o 'name'.");
+        }
+
+        var users = await query.ToListAsync();
+        return Ok(users);
     }
 }
 
