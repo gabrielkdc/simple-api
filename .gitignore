@@ -9,3 +9,11 @@ UsersAPI/obj
 .idea/.idea.UsersAPI/.idea/
 
 .vs/UsersAPI/FileContentIndex/
+
+*.bin
+
+*.v2
+
+.vs/ProjectEvaluation/
+
+.vs/UsersAPI/DesignTimeBuild/

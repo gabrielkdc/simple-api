@@ -19,17 +19,21 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> RegisterUser(User user)
     {
-        // Verificar si el modelo es válido
+        // Verificar si el modelo es vÃ¡lido
         if (!ModelState.IsValid)
         {
-            return BadRequest("Datos de usuario no válidos.");
+            return BadRequest("Datos de usuario no vï¿½lidos.");
         }
+
+        // Eliminar espacios vacÃ­os al principio y al final de los campos Name y Username
+        user.Name = user.Name?.Trim();
+        user.Username = user.Username?.Trim();
 
         // Verificar si ya existe un usuario con el mismo nombre de usuario
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
         if (existingUser != null)
         {
-            return Conflict("El nombre de usuario ya está en uso.");
+            return Conflict("El nombre de usuario ya estï¿½ en uso.");
         }
 
         // Agregar el usuario a la base de datos
@@ -49,6 +53,7 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
@@ -64,6 +69,7 @@ public class UsersController : ControllerBase
 
         return Ok("Usuario eliminado exitosamente.");
     }
+    
     private bool UserExists(int id)
     {
         return _context.Users.Any(e => e.Id == id);
@@ -109,11 +115,25 @@ public class UsersController : ControllerBase
                 query = query.OrderBy(u => u.Name);
                 break;
             default:
-                return BadRequest("El parámetro 'orderBy' solo puede ser 'username' o 'name'.");
+                return BadRequest("El parï¿½metro 'orderBy' solo puede ser 'username' o 'name'.");
         }
 
         var users = await query.ToListAsync();
         return Ok(users);
     }
+
+    [HttpGet("username/{username}")]
+    public async Task<IActionResult> GetUserByUsername(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+        if (user == null)
+        {
+            return NotFound("Usuario no encontrado.");
+        }
+
+        return Ok(user);
+    }
 }
+    
 
