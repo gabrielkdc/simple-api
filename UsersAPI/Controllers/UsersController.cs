@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
+using System;
 
 namespace UsersAPI.Controllers;
 
@@ -23,6 +24,12 @@ public class UsersController : ControllerBase
         if (!ModelState.IsValid)
         {
             return BadRequest("Datos de usuario no v�lidos.");
+        }
+
+        // Validar que el campo Password no esté compuesto únicamente por espacios vacíos
+        if (string.IsNullOrWhiteSpace(user.Password))
+        {
+            return BadRequest("La contraseña no puede estar vacía.");
         }
 
         // Verificar si ya existe un usuario con el mismo nombre de usuario
