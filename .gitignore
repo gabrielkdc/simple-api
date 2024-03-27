@@ -13,3 +13,7 @@ UsersAPI/obj
 *.bin
 
 *.v2
+
+.vs/ProjectEvaluation/
+
+.vs/UsersAPI/DesignTimeBuild/
