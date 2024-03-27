@@ -17,3 +17,6 @@ UsersAPI/obj
 .vs/ProjectEvaluation/
 
 .vs/UsersAPI/DesignTimeBuild/
+
+UsersAPI.Test/bin/
+UsersAPI.Test/obj/
