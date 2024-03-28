@@ -46,8 +46,10 @@ public class UsersController : ControllerBase
         // Agregar el usuario a la base de datos
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        return Ok("Usuario registrado exitosamente.");
+        return Ok(user);
     }
+    
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
     {
