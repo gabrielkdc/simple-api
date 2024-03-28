@@ -75,7 +75,27 @@ public class UsersControllerTests
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
 
     }
-    
 
+    [Fact]
+    public async Task RegisterUser_ShouldFail_WhenPassordIsMoreThan10Characters()
+    {
 
+        // Arrange  -- Prepare the test data
+
+        var newUser = new User
+        {
+            Name = "TestUser",
+            Username = "testuser",
+            Password = "1234567890a"
+        };
+
+        var httpClient = new HttpClient();
+
+        // Act -- Call the method to be tested
+        var result = await httpClient.PostAsJsonAsync("https://localhost:7266/Users", newUser);
+
+        // Assert -- Validate the result
+
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
 }
