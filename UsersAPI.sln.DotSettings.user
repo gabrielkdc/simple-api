@@ -4,5 +4,8 @@
     &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldReturnOk_WhenAllFieldsAreFilled&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldFailWithPasswordEmtpy_WhenPasswordIsNull&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldFail_WhenPasswordIsLessThan6Characters&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldFail_WhenPassordIsMoreThan10Characters&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldReturnOk_WhenAllFieldsAreFilledWithDiffentScenarios&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B798C143-8A93-404D-B19B-406CBCFFD315::net6.0::UsersAPI.Test.UsersControllerTests.RegisterUser_ShouldFail_WhenAllPasswordLengthIsNotWithinTheValidRange&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
