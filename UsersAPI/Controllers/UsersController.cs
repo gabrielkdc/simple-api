@@ -106,7 +106,7 @@ public class UsersController : ControllerBase
         }
 
 
-        return Ok("Usuario actualizado exitosamente.");
+        return Ok(user);
     }
 
 
