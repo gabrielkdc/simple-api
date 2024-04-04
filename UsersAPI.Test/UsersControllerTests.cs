@@ -178,11 +178,11 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
             Password = "newpasswo"
         };
 
-        // Act - Llamar al método para actualizar el usuario
+        // Act - Llamar al mï¿½todo para actualizar el usuario
         var updateResult = await httpClient.PutAsJsonAsync($"Users/{createdUser.Id}", updatedUser);
 
         // Assert - Validar el resultado
-        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualización sea exitosa
+        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualizaciï¿½n sea exitosa
         var updatedUserResult = await updateResult.Content.ReadFromJsonAsync<User>();
         Assert.NotNull(updatedUserResult);
         Assert.Equal(updatedUser.Name, updatedUserResult.Name);
@@ -192,7 +192,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
     [Fact]
     public async Task GetUsers_ShouldReturnListOfUsers()
     {
-        // Arrange: prepara la solicitud GET con el parámetro orderBy
+        // Arrange: prepara la solicitud GET con el parï¿½metro orderBy
         var request = new HttpRequestMessage(HttpMethod.Get, "Users?orderBy=username");
 
         // Act: realiza la solicitud al servidor
