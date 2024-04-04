@@ -195,6 +195,17 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         // Arrange: prepara la solicitud GET con el par�metro orderBy
         var request = new HttpRequestMessage(HttpMethod.Get, "Users?orderBy=username");
 
+        var newUser = new User
+        {
+            Name = "TestUser",
+            Username = "testuser",
+            Password = "123456"
+        };
+        var result = await httpClient.PostAsJsonAsync("Users", newUser);
+        
+        var createdUser = await result.Content.ReadFromJsonAsync<User>();
+        createdUsersIds.Add(createdUser.Id);
+        
         // Act: realiza la solicitud al servidor
         var response = await httpClient.SendAsync(request);
 
