@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using UsersAPI.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net.Http;
 
 namespace UsersAPI.Test;
 
@@ -177,15 +178,31 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
             Password = "newpasswo"
         };
 
-        // Act - Llamar al método para actualizar el usuario
+        // Act - Llamar al mï¿½todo para actualizar el usuario
         var updateResult = await httpClient.PutAsJsonAsync($"Users/{createdUser.Id}", updatedUser);
 
         // Assert - Validar el resultado
-        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualización sea exitosa
+        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualizaciï¿½n sea exitosa
         var updatedUserResult = await updateResult.Content.ReadFromJsonAsync<User>();
         Assert.NotNull(updatedUserResult);
         Assert.Equal(updatedUser.Name, updatedUserResult.Name);
         Assert.Equal(updatedUser.Username, updatedUserResult.Username);
+    }
+
+    [Fact]
+    public async Task GetUsers_ShouldReturnListOfUsers()
+    {
+        // Arrange: prepara la solicitud GET con el parï¿½metro orderBy
+        var request = new HttpRequestMessage(HttpMethod.Get, "Users?orderBy=username");
+
+        // Act: realiza la solicitud al servidor
+        var response = await httpClient.SendAsync(request);
+
+        // Assert: verifica que la solicitud sea exitosa y que devuelva una lista de usuarios
+        response.EnsureSuccessStatusCode();
+        var users = await response.Content.ReadFromJsonAsync<List<User>>();
+        Assert.NotNull(users);
+        Assert.NotEmpty(users);
     }
 
     public Task InitializeAsync()
