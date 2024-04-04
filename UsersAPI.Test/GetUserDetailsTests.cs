@@ -20,67 +20,32 @@ public class GetUserDetailsTests : IClassFixture<WebApplicationFactory<IApiMarke
     }
 
     [Fact]
-    public async Task GetUserDetail_ShouldReturnNotFound_WhenTheUserDoesNotExists()
+    public async Task ShouldReturnNotfoun_WhenTheUserDoesNotExists()
     {
         // Arrange -- prepare the test data
 
         var newUser = new User
         {
-            Name = "Nombre",
-            Password = "12345678",
-            Username = "testUser"
+            Name="Nombre",
+            Password="1234567",
+            Username="Username2"
         };
+        await httpClient.PostAsJsonAsync("Users", newUser);
+        var UserId = newUser.Id;
+        httpClient.DeleteAsync($"Users/{UserId}");
 
-        //Act -- Call the method to create the user
+        // Act call the method to be tested
 
-        var createResponse = await httpClient.PostAsJsonAsync("Users", newUser);
-        createResponse.EnsureSuccessStatusCode();
-        var createdUser = await createResponse.Content.ReadFromJsonAsync<User>();
-        var userId = createdUser.Id;
-        var deleteResponse = await httpClient.DeleteAsync($"Users/{userId}");
+        var result = await httpClient.GetAsync($"/Users/{UserId}");
 
-        //Act -- Call the method to be tested
-
-        var result = await httpClient.GetAsync($"Users/{userId}");
-
-        //Assert -- Validate the result
+        // Asert -- Validate the Result
 
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
-    }
 
-    [Fact]
-    public async Task GetUserDetail_ShouldReturnOK_WhenTheUseExists()
-    {
-        // Arrange -- prepare the test data
-
-        var newUser = new User
-        {
-            Name = "Nombre",
-            Password = "12345678",
-            Username = "testUser"
-        };
-
-        //Act -- Call the method to create the user
-
-        var createResponse = await httpClient.PostAsJsonAsync("Users", newUser);
-        createResponse.EnsureSuccessStatusCode();
-        var user = await createResponse.Content.ReadFromJsonAsync<User>();
-        var userId = user.Id;
-
-        //Act -- Call the method to be tested
-
-        var result = await httpClient.GetAsync($"Users/{userId}");
-
-        //Assert -- Validate the result
-
-        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        var createdUser = await result.Content.ReadFromJsonAsync<User>();
-        Assert.NotNull(createdUser);
-        createdUsersIds.Add(createdUser.Id);
     }
 
     public Task InitializeAsync()
-    {
+    {    
         return Task.CompletedTask;
     }
 

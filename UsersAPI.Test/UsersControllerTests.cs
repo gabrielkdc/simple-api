@@ -15,10 +15,11 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
     }
     
     [Theory]
-    [InlineData("TestUser", "testuser", "1234567")]
-    [InlineData("TestUser1", "testuser1", "123456a")]
-    [InlineData("TestUser2", "testuser2", "123456d")]
-    [InlineData("TestUser3", "testuser3", "123456d")]
+    [InlineData("TestUser", "testuser", "123456")]
+    [InlineData("TestUser1", "testuser1", "123456ased")]
+    [InlineData("TestUser2", "testuser2", "123456dds")]
+    [InlineData("TestUser3", "testuser3", "123456de")]
+
     public async Task RegisterUser_ShouldReturnOk_WhenAllFieldsAreFilledWithDifferentScenarios(string name, string username, string password )
     {
         // Arrange  -- Prepare the test data
@@ -73,7 +74,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         {
             Name = "TestUser",
             Username = "testuser",
-            Password = "12345678"
+            Password = "123456"
         };
 
         // Act -- Call the method to be tested
@@ -148,6 +149,43 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         // Assert -- Validate the result
 
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateUser_ShouldReturnOk_WhenUserIsUpdated()
+    {
+        // Arrange
+        var newUser = new User
+        {
+            Name = "TestUser",
+            Username = "testuser",
+            Password = "123456"
+        };
+
+        // Agregar un nuevo usuario
+        var result = await httpClient.PostAsJsonAsync("Users", newUser);
+        result.EnsureSuccessStatusCode(); // Verificar que la solicitud sea exitosa
+        var createdUser = await result.Content.ReadFromJsonAsync<User>();
+        createdUsersIds.Add(createdUser.Id);
+
+        // Datos del usuario actualizado
+        var updatedUser = new User
+        {
+            Id = createdUser.Id,
+            Name = "Tester",
+            Username = "tester",
+            Password = "newpasswo"
+        };
+
+        // Act - Llamar al método para actualizar el usuario
+        var updateResult = await httpClient.PutAsJsonAsync($"Users/{createdUser.Id}", updatedUser);
+
+        // Assert - Validar el resultado
+        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualización sea exitosa
+        var updatedUserResult = await updateResult.Content.ReadFromJsonAsync<User>();
+        Assert.NotNull(updatedUserResult);
+        Assert.Equal(updatedUser.Name, updatedUserResult.Name);
+        Assert.Equal(updatedUser.Username, updatedUserResult.Username);
     }
 
     public Task InitializeAsync()
