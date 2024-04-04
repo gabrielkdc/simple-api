@@ -150,6 +150,43 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
     }
 
+    [Fact]
+    public async Task GetUserByUsername_ShouldReturnOk_WhenUserExists()
+    {
+        // Arrange
+        var newUser = new User
+        {
+            Name = "Tester",
+            Username = "tester",
+            Password = "1234567"
+        };
+        var registrationResult = await httpClient.PostAsJsonAsync("Users", newUser);
+        registrationResult.EnsureSuccessStatusCode(); // Ensure user registration was successful
+
+        // Act
+        var result = await httpClient.GetAsync($"Users/username/{newUser.Username}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        var user = await result.Content.ReadFromJsonAsync<User>();
+        Assert.NotNull(user);
+        Assert.Equal(newUser.Username, user.Username);
+    }
+
+    [Fact]
+    public async Task GetUserByUsername_ShouldReturnNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        string nonExistentUsername = "nonexistentuser";
+
+        // Act
+        var response = await httpClient.GetAsync($"Users/username/{nonExistentUsername}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+
     public Task InitializeAsync()
     {
         return Task.CompletedTask;
