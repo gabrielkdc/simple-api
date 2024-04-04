@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
 using System;
+using UsersAPI.Services;
 
 namespace UsersAPI.Controllers;
 
@@ -12,41 +13,35 @@ public class UsersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
 
+    private RegisterUserService registerUserService;
+
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
+        this.registerUserService = new RegisterUserService(context);
     }
 
     [HttpPost]
     public async Task<IActionResult> RegisterUser(User user)
     {
-        // Verificar si el modelo es válido
         if (!ModelState.IsValid)
         {
             return BadRequest("Datos de usuario no v�lidos.");
         }
 
-        // Validar que el campo Password no esté compuesto únicamente por espacios vacíos
-        if (string.IsNullOrWhiteSpace(user.Password))
+        var registerResult = await registerUserService.CreateNewUser(user);
+
+        switch (registerResult)
         {
-            return BadRequest("La contraseña no puede estar vacía.");
+            case 0 :
+                return BadRequest("La contraseña no puede estar vacía.");
+            case 1:
+                return Conflict("El nombre de usuario ya est� en uso.");
+            case 2:
+                return Ok(user);
+            default:
+                return StatusCode(500, "Error al registrar el usuario.");
         }
-
-        // Eliminar espacios vacíos al principio y al final de los campos Name y Username
-        user.Name = user.Name?.Trim();
-        user.Username = user.Username?.Trim();
-
-        // Verificar si ya existe un usuario con el mismo nombre de usuario
-        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
-        if (existingUser != null)
-        {
-            return Conflict("El nombre de usuario ya est� en uso.");
-        }
-
-        // Agregar el usuario a la base de datos
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return Ok(user);
     }
     
     
