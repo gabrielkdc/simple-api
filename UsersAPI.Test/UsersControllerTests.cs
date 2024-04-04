@@ -15,10 +15,10 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
     }
     
     [Theory]
-    [InlineData("TestUser", "testuser", "123456")]
-    [InlineData("TestUser1", "testuser1", "123456ased")]
-    [InlineData("TestUser2", "testuser2", "123456dds")]
-    [InlineData("TestUser3", "testuser3", "123456de")]
+    [InlineData("TestUser", "testuser", "1234567")]
+    [InlineData("TestUser1", "testuser1", "123456a")]
+    [InlineData("TestUser2", "testuser2", "123456d")]
+    [InlineData("TestUser3", "testuser3", "123456d")]
     public async Task RegisterUser_ShouldReturnOk_WhenAllFieldsAreFilledWithDifferentScenarios(string name, string username, string password )
     {
         // Arrange  -- Prepare the test data
@@ -73,7 +73,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         {
             Name = "TestUser",
             Username = "testuser",
-            Password = "123456"
+            Password = "12345678"
         };
 
         // Act -- Call the method to be tested
