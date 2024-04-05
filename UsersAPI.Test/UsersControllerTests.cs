@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using UsersAPI.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net.Http;
 
 namespace UsersAPI.Test;
 
@@ -19,6 +20,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
     [InlineData("TestUser1", "testuser1", "123456ased")]
     [InlineData("TestUser2", "testuser2", "123456dds")]
     [InlineData("TestUser3", "testuser3", "123456de")]
+
     public async Task RegisterUser_ShouldReturnOk_WhenAllFieldsAreFilledWithDifferentScenarios(string name, string username, string password )
     {
         // Arrange  -- Prepare the test data
@@ -151,6 +153,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
     }
 
     [Fact]
+
     public async Task GetUserByUsername_ShouldReturnOk_WhenUserExists()
     {
         // Arrange
@@ -184,6 +187,71 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateUser_ShouldReturnOk_WhenUserIsUpdated()
+
+    {
+        // Arrange
+        var newUser = new User
+        {
+            Name = "TestUser",
+            Username = "testuser",
+            Password = "123456"
+        };
+
+        // Agregar un nuevo usuario
+        var result = await httpClient.PostAsJsonAsync("Users", newUser);
+        result.EnsureSuccessStatusCode(); // Verificar que la solicitud sea exitosa
+        var createdUser = await result.Content.ReadFromJsonAsync<User>();
+        createdUsersIds.Add(createdUser.Id);
+
+        // Datos del usuario actualizado
+        var updatedUser = new User
+        {
+            Id = createdUser.Id,
+            Name = "Tester",
+            Username = "tester",
+            Password = "newpasswo"
+        };
+
+        // Act - Llamar al m�todo para actualizar el usuario
+        var updateResult = await httpClient.PutAsJsonAsync($"Users/{createdUser.Id}", updatedUser);
+
+        // Assert - Validar el resultado
+        updateResult.EnsureSuccessStatusCode(); // Verificar que la solicitud de actualizaci�n sea exitosa
+        var updatedUserResult = await updateResult.Content.ReadFromJsonAsync<User>();
+        Assert.NotNull(updatedUserResult);
+        Assert.Equal(updatedUser.Name, updatedUserResult.Name);
+        Assert.Equal(updatedUser.Username, updatedUserResult.Username);
+    }
+
+    [Fact]
+    public async Task GetUsers_ShouldReturnListOfUsers()
+    {
+        // Arrange: prepara la solicitud GET con el par�metro orderBy
+        var request = new HttpRequestMessage(HttpMethod.Get, "Users?orderBy=username");
+
+        var newUser = new User
+        {
+            Name = "TestUser",
+            Username = "testuser",
+            Password = "123456"
+        };
+        var result = await httpClient.PostAsJsonAsync("Users", newUser);
+        
+        var createdUser = await result.Content.ReadFromJsonAsync<User>();
+        createdUsersIds.Add(createdUser.Id);
+        
+        // Act: realiza la solicitud al servidor
+        var response = await httpClient.SendAsync(request);
+
+        // Assert: verifica que la solicitud sea exitosa y que devuelva una lista de usuarios
+        response.EnsureSuccessStatusCode();
+        var users = await response.Content.ReadFromJsonAsync<List<User>>();
+        Assert.NotNull(users);
+        Assert.NotEmpty(users);
     }
 
 
