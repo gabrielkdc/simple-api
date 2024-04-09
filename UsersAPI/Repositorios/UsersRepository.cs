@@ -25,4 +25,29 @@ public class UsersRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> Update(User user)
+    {
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<List<User>> GetUsers(string orderBy)
+    {
+        List<User> userList;
+        switch (orderBy.ToLower())
+        {
+            case "username":
+                userList = await _context.Users.OrderBy(u => u.Username).ToListAsync();
+                break;
+            case "name":
+                userList = await _context.Users.OrderBy(u => u.Name).ToListAsync();
+                break;
+            default:
+                userList = await _context.Users.ToListAsync();
+                break;
+        }
+        return userList;
+    }
 }
