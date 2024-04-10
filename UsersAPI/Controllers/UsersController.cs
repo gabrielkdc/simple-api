@@ -4,6 +4,7 @@ using UsersAPI.Data;
 using UsersAPI.Models;
 using System;
 using UsersAPI.Services;
+using UsersAPI.Services.Users;
 
 namespace UsersAPI.Controllers;
 
@@ -15,10 +16,14 @@ public class UsersController : ControllerBase
 
     private RegisterUserService registerUserService;
 
+    private GetUserByIdService getUserByIdService;
+
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
+        this.getUserByIdService = new GetUserByIdService(context);
+
     }
 
     [HttpPost]
@@ -48,7 +53,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await getUserByIdService.GetUserById(id);
 
         if (user == null)
         {

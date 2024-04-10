@@ -54,7 +54,7 @@ public class DeleteUserTests : IClassFixture<WebApplicationFactory<IApiMarker>>,
         var newuser = new User
         {
             Name = "NOMBRE",
-            Username = "testuser",
+            Username = "testuser2",
             Password = "12345678",
         };
 
