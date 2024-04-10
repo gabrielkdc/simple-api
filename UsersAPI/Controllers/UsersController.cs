@@ -14,15 +14,21 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private RegisterUserService registerUserService;
+<<<<<<< Updated upstream
+=======
     private UpdateUserService updateUserService;
     private GetUsersService getUserService;
+>>>>>>> Stashed changes
 
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
+<<<<<<< Updated upstream
+=======
         this.updateUserService = new UpdateUserService(context);
         this.getUserService = new GetUsersService(context);
+>>>>>>> Stashed changes
     }
 
     [HttpPost]

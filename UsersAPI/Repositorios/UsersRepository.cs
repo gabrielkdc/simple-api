@@ -25,6 +25,8 @@ public class UsersRepository
         await _context.SaveChangesAsync();
         return true;
     }
+<<<<<<< Updated upstream
+=======
 
     public async Task<bool> Update(User user)
     {
@@ -64,4 +66,5 @@ public class UsersRepository
 
         return await query.ToListAsync();
     }
+>>>>>>> Stashed changes
 }

@@ -161,8 +161,11 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var newUser = new User
         {
             Name = "Tester",
+<<<<<<< Updated upstream
             Username = "tester",
+=======
             Username = "tester2",
+>>>>>>> Stashed changes
             Password = "1234567"
         };
         var registrationResult = await httpClient.PostAsJsonAsync("Users", newUser);
