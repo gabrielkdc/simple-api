@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using UsersAPI.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http;
+using System.Threading.Channels;
 
 namespace UsersAPI.Test;
 
@@ -161,6 +162,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         {
             Name = "Tester",
             Username = "tester",
+            Username = "tester2",
             Password = "1234567"
         };
         var registrationResult = await httpClient.PostAsJsonAsync("Users", newUser);
@@ -172,6 +174,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         // Assert
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         var user = await result.Content.ReadFromJsonAsync<User>();
+        createdUsersIds.Add(user.Id);
         Assert.NotNull(user);
         Assert.Equal(newUser.Username, user.Username);
     }
