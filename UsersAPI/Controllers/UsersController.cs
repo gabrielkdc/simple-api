@@ -4,6 +4,7 @@ using UsersAPI.Data;
 using UsersAPI.Models;
 using System;
 using UsersAPI.Services;
+using UsersAPI.Services.Users;
 
 namespace UsersAPI.Controllers;
 
@@ -14,11 +15,13 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private RegisterUserService registerUserService;
+    private GetUserByUsernameService getUserByUsernameService;
 
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
+        this.getUserByUsernameService = new GetUserByUsernameService(context);
     }
 
     [HttpPost]
@@ -129,14 +132,17 @@ public class UsersController : ControllerBase
     [HttpGet("username/{username}")]
     public async Task<IActionResult> GetUserByUsername(string username)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-        if (user == null)
+        var getUserResult = await getUserByUsernameService.GetUserByUsername(username);
+
+        if (getUserResult != null && getUserResult.Username != null)
         {
-            return NotFound("Usuario no encontrado.");
+            return Ok(getUserResult);
         }
-
-        return Ok(user);
+        else
+        {
+            return NotFound("El usuario no encontrado");
+        }     
     }
 }
     

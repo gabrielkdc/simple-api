@@ -21,14 +21,14 @@ public class DeleteUserTests : IClassFixture<WebApplicationFactory<IApiMarker>>,
     }
 
     [Fact]
-    public async Task DeleteUser_ShouldReturnNotFound_WhenTheUserDoesNotExists()
+    public async Task DeleteUser_ShouldReturnNotFound_WhenTheUserDoNotExists()
     {
         // Arrange -- prepare the test data
         var newUser = new User
         {
             Name = "Nombre",
             Password = "12345678",
-            Username = "TestUser"   
+            Username = "TestUser1"   
         };
         // Act -- call the method to create the user
 
