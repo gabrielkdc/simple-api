@@ -19,14 +19,24 @@ public class UsersRepository
         return existingUser != null;
     }
 
+    public async Task<bool> UserExists(int id)
+    {
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return existingUser != null;
+    }
+
     public async Task<bool> Create(User user)
     {
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return true;
     }
-<<<<<<< Updated upstream
-=======
+
+    public async Task<User> GetUserById(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
 
     public async Task<bool> Update(User user)
     {
@@ -48,7 +58,6 @@ public class UsersRepository
             return false;
         }
     }
-
     public async Task<List<User>> GetUsers(string orderBy)
     {
 
@@ -66,5 +75,4 @@ public class UsersRepository
 
         return await query.ToListAsync();
     }
->>>>>>> Stashed changes
 }

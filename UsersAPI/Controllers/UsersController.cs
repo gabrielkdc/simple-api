@@ -4,6 +4,7 @@ using UsersAPI.Data;
 using UsersAPI.Models;
 using System;
 using UsersAPI.Services;
+using UsersAPI.Services.Users;
 
 namespace UsersAPI.Controllers;
 
@@ -14,21 +15,19 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private RegisterUserService registerUserService;
-<<<<<<< Updated upstream
-=======
-    private UpdateUserService updateUserService;
     private GetUsersService getUserService;
->>>>>>> Stashed changes
+    private UpdateUserService updateUserService;
+
+    private GetUserByIdService getUserByIdService;
 
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
-<<<<<<< Updated upstream
-=======
-        this.updateUserService = new UpdateUserService(context);
         this.getUserService = new GetUsersService(context);
->>>>>>> Stashed changes
+        this.getUserByIdService = new GetUserByIdService(context);
+
+        this.updateUserService = new UpdateUserService(context);
     }
 
     [HttpPost]
@@ -58,7 +57,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await getUserByIdService.GetUserById(id);
 
         if (user == null)
         {
@@ -93,25 +92,19 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, User user)
     {
-        if (id != user.Id)
+        var updateResult = await updateUserService.UpdateUser(id, user);
+
+        switch (updateResult)
         {
-            return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-        }
-
-        _context.Entry(user).State = EntityState.Modified;
-
-
-        if (!UserExists(id))
-        {
-            return NotFound("Usuario no encontrado.");
-        }
-        else
-        {
-            await _context.SaveChangesAsync();
-        }
-
-
-        return Ok(user);
+            case 0:
+                return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
+            case 1:
+                return NotFound("Usuario no encontrado.");
+            case 2:
+                return Ok(user);
+            default:
+                return BadRequest();
+        }   
     }
 
 
