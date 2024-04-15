@@ -17,6 +17,7 @@ public class UsersController : ControllerBase
     private RegisterUserService registerUserService;
     private GetUsersService getUserService;
     private UpdateUserService updateUserService;
+    private GetUserByUsernameService getUserByUsernameService;
 
     private GetUserByIdService getUserByIdService;
 
@@ -125,14 +126,17 @@ public class UsersController : ControllerBase
     [HttpGet("username/{username}")]
     public async Task<IActionResult> GetUserByUsername(string username)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-        if (user == null)
+        var getUserResult = await getUserByUsernameService.GetUserByUsername(username);
+
+        if (getUserResult != null && getUserResult.Username != null)
         {
-            return NotFound("Usuario no encontrado.");
+            return Ok(getUserResult);
         }
-
-        return Ok(user);
+        else
+        {
+            return NotFound("El usuario no encontrado");
+        }     
     }
 }
     

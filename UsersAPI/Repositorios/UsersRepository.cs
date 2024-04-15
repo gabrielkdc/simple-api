@@ -31,6 +31,12 @@ public class UsersRepository
         await _context.SaveChangesAsync();
         return true;
     }
+    public async Task<User> GetUserByUsername(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+        return user;
+    }
 
     public async Task<User> GetUserById(int id)
         {
