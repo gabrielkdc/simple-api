@@ -28,7 +28,7 @@ public class DeleteUserTests : IClassFixture<WebApplicationFactory<IApiMarker>>,
         {
             Name = "Nombre",
             Password = "12345678",
-            Username = "TestUser"   
+            Username = "TestUser1"   
         };
         // Act -- call the method to create the user
 

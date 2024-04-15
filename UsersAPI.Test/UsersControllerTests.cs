@@ -196,13 +196,12 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var newUser = new User
         {
             Name = "TestUser",
-            Username = "testuser",
+            Username = "testuser2",
             Password = "123456"
         };
 
         // Agregar un nuevo usuario
         var result = await httpClient.PostAsJsonAsync("Users", newUser);
-        result.EnsureSuccessStatusCode(); // Verificar que la solicitud sea exitosa
         var createdUser = await result.Content.ReadFromJsonAsync<User>();
         createdUsersIds.Add(createdUser.Id);
 

@@ -15,6 +15,7 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private RegisterUserService registerUserService;
+    private UpdateUserService updateUserService;
 
     private GetUserByIdService getUserByIdService;
 
@@ -24,6 +25,7 @@ public class UsersController : ControllerBase
         this.registerUserService = new RegisterUserService(context);
         this.getUserByIdService = new GetUserByIdService(context);
 
+        this.updateUserService = new UpdateUserService(context);
     }
 
     [HttpPost]
@@ -88,25 +90,19 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, User user)
     {
-        if (id != user.Id)
+        var updateResult = await updateUserService.UpdateUser(id, user);
+
+        switch (updateResult)
         {
-            return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-        }
-
-        _context.Entry(user).State = EntityState.Modified;
-
-
-        if (!UserExists(id))
-        {
-            return NotFound("Usuario no encontrado.");
-        }
-        else
-        {
-            await _context.SaveChangesAsync();
-        }
-
-
-        return Ok(user);
+            case 0:
+                return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
+            case 1:
+                return NotFound("Usuario no encontrado.");
+            case 2:
+                return Ok(user);
+            default:
+                return BadRequest();
+        }   
     }
 
 
