@@ -64,4 +64,21 @@ public class UsersRepository
             return false;
         }
     }
+    public async Task<List<User>> GetUsers(string orderBy)
+    {
+
+        IQueryable<User> query = _context.Users;
+
+        switch (orderBy.ToLower())
+        {
+            case "username":
+                query = query.OrderBy(u => u.Username);
+                break;
+            case "name":
+                query = query.OrderBy(u => u.Name);
+                break;
+        }
+
+        return await query.ToListAsync();
+    }
 }

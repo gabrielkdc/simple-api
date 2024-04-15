@@ -15,6 +15,7 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private RegisterUserService registerUserService;
+    private GetUsersService getUserService;
     private UpdateUserService updateUserService;
     private GetUserByUsernameService getUserByUsernameService;
 
@@ -24,6 +25,7 @@ public class UsersController : ControllerBase
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
+        this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
 
         this.updateUserService = new UpdateUserService(context);
@@ -110,22 +112,15 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsers(string orderBy = "username")
     {
-        IQueryable<User> query = _context.Users;
-
-        switch (orderBy.ToLower())
+        try
         {
-            case "username":
-                query = query.OrderBy(u => u.Username);
-                break;
-            case "name":
-                query = query.OrderBy(u => u.Name);
-                break;
-            default:
-                return BadRequest("El par�metro 'orderBy' solo puede ser 'username' o 'name'.");
+            var getUsersResult = await getUserService.GetUsers(orderBy);
+            return Ok(getUsersResult);
         }
-
-        var users = await query.ToListAsync();
-        return Ok(users);
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error al obtener la lista de usuarios: {ex.Message}");
+        }
     }
 
     [HttpGet("username/{username}")]
