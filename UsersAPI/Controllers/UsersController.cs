@@ -17,10 +17,14 @@ public class UsersController : ControllerBase
     private RegisterUserService registerUserService;
     private UpdateUserService updateUserService;
 
+    private GetUserByIdService getUserByIdService;
+
     public UsersController(ApplicationDbContext context)
     {
         _context = context;
         this.registerUserService = new RegisterUserService(context);
+        this.getUserByIdService = new GetUserByIdService(context);
+
         this.updateUserService = new UpdateUserService(context);
     }
 
@@ -51,7 +55,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await getUserByIdService.GetUserById(id);
 
         if (user == null)
         {
