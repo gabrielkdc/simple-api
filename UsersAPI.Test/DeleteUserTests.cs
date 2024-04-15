@@ -21,7 +21,7 @@ public class DeleteUserTests : IClassFixture<WebApplicationFactory<IApiMarker>>,
     }
 
     [Fact]
-    public async Task DeleteUser_ShouldReturnNotFound_WhenTheUserDoesNotExists()
+    public async Task DeleteUser_ShouldReturnNotFound_WhenTheUserDoNotExists()
     {
         // Arrange -- prepare the test data
         var newUser = new User

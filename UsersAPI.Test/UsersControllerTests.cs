@@ -160,7 +160,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var newUser = new User
         {
             Name = "Tester",
-            Username = "tester0",
+            Username = "tester4",
             Password = "1234567"
         };
         var registrationResult = await httpClient.PostAsJsonAsync("Users", newUser);
@@ -172,17 +172,30 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         var user = await result.Content.ReadFromJsonAsync<User>();
         Assert.NotNull(user);
+        createdUsersIds.Add(user.Id);
         Assert.Equal(newUser.Username, user.Username);
     }
 
     [Fact]
     public async Task GetUserByUsername_ShouldReturnNotFound_WhenUserDoesNotExist()
     {
-        // Arrange
-        string nonExistentUsername = "nonexistentuser";
+        // Arrange -- prepare the test data
+        var newUser = new User
+        {
+            Name = "Nombre",
+            Password = "12345678",
+            Username = "TestUser1"
+        };
+        // Act -- call the method to create the user
+
+        var createResponse = await httpClient.PostAsJsonAsync("Users", newUser);
+        createResponse.EnsureSuccessStatusCode();
+        var createdUser = await createResponse.Content.ReadFromJsonAsync<User>();
+        var userId = createdUser.Id;
+        var deleteResponse = await httpClient.DeleteAsync($"Users/{userId}");
 
         // Act
-        var response = await httpClient.GetAsync($"Users/username/{nonExistentUsername}");
+        var response = await httpClient.GetAsync($"Users/username/{userId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -196,7 +209,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var newUser = new User
         {
             Name = "TestUser",
-            Username = "testuser2",
+            Username = "testuser4",
             Password = "123456"
         };
 
