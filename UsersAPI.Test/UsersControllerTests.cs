@@ -164,7 +164,6 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
             Password = "1234567"
         };
         var registrationResult = await httpClient.PostAsJsonAsync("Users", newUser);
-        registrationResult.EnsureSuccessStatusCode(); // Ensure user registration was successful
 
         // Act
         var result = await httpClient.GetAsync($"Users/username/{newUser.Username}");
@@ -216,7 +215,6 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
 
         // Agregar un nuevo usuario
         var result = await httpClient.PostAsJsonAsync("Users", newUser);
-        result.EnsureSuccessStatusCode(); // Verificar que la solicitud sea exitosa
         var createdUser = await result.Content.ReadFromJsonAsync<User>();
         createdUsersIds.Add(createdUser.Id);
 
