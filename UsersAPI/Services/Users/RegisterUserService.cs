@@ -1,19 +1,18 @@
-using Microsoft.EntityFrameworkCore;
-using UsersAPI.Data;
 using UsersAPI.Models;
-using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services;
 
-public class RegisterUserService
+public class RegisterUserService : IRegisterUserService
 {
 
-    private UsersRepository usersRepository;
+    private IUsersRepository usersRepository;
 
 
-    public RegisterUserService(ApplicationDbContext context)
+    public RegisterUserService(IUsersRepository usersRepository)
     {
-        this.usersRepository = new UsersRepository(context);
+        this.usersRepository = usersRepository;
     }
 
     public async Task<int> CreateNewUser(User user)
@@ -35,4 +34,8 @@ public class RegisterUserService
         await usersRepository.Create(user);
         return 2;
     }
+
+
 }
+
+
