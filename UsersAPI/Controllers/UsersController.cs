@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
-using System;
-using UsersAPI.Services;
+using UsersAPI.ServiceAbstractions;
 using UsersAPI.Services.Users;
 
 namespace UsersAPI.Controllers;
@@ -14,17 +12,17 @@ public class UsersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
 
-    private RegisterUserService registerUserService;
+    private IRegisterUserService registerUserService;
     private GetUsersService getUserService;
     private UpdateUserService updateUserService;
     private GetUserByUsernameService getUserByUsernameService;
 
     private GetUserByIdService getUserByIdService;
 
-    public UsersController(ApplicationDbContext context)
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService)
     {
         _context = context;
-        this.registerUserService = new RegisterUserService(context);
+        this.registerUserService = registerUserService;
         this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
 
@@ -40,6 +38,7 @@ public class UsersController : ControllerBase
         }
 
         var registerResult = await registerUserService.CreateNewUser(user);
+        
 
         switch (registerResult)
         {
