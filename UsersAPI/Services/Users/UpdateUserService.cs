@@ -2,16 +2,18 @@
 using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services.Users
 {
-    public class UpdateUserService
+    public class UpdateUserService : IUpdateUserService
     {
-        private UsersRepository _usersRepository;
-        
-        public UpdateUserService(ApplicationDbContext context)
+        private IUsersRepository usersRepository;
+
+        public UpdateUserService(IUsersRepository usersRepository)
         {
-            _usersRepository = new UsersRepository(context);
+            this.usersRepository = usersRepository;
         }
 
         public async Task<int> UpdateUser(int id, User user)
@@ -21,13 +23,13 @@ namespace UsersAPI.Services.Users
                 return 0;
             }
 
-            if (! await _usersRepository.UserExists(id))
+            if (! await usersRepository.UserExists(id))
             {
                 return 1;
             }
             else
             {
-                await _usersRepository.Update(user);
+                await usersRepository.Update(user);
                 return 2;
             }
         }

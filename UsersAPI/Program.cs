@@ -4,6 +4,7 @@ using UsersAPI.Repositorios;
 using UsersAPI.RepositoryAbstractions;
 using UsersAPI.ServiceAbstractions;
 using UsersAPI.Services;
+using UsersAPI.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IRegisterUserService, RegisterUserService>();
+builder.Services.AddScoped<IUpdateUserService, UpdateUserService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 var app = builder.Build();
