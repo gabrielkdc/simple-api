@@ -13,20 +13,19 @@ public class UsersController : ControllerBase
     private readonly ApplicationDbContext _context;
 
     private IRegisterUserService registerUserService;
+    private IUpdateUserService updateUserService;
     private GetUsersService getUserService;
-    private UpdateUserService updateUserService;
     private GetUserByUsernameService getUserByUsernameService;
 
     private GetUserByIdService getUserByIdService;
 
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService)
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService)
     {
         _context = context;
         this.registerUserService = registerUserService;
+        this.updateUserService = updateUserService;
         this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
-
-        this.updateUserService = new UpdateUserService(context);
     }
 
     [HttpPost]

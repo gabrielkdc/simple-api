@@ -25,7 +25,7 @@ public class RegisterUserService : IRegisterUserService
         user.Name = user.Name?.Trim();
         user.Username = user.Username?.Trim();
 
-        var existingUser = await usersRepository.UserExists( user.Username);
+        var existingUser = await usersRepository.UserExists(user.Username);
         if (existingUser)
         {
             return 1;
