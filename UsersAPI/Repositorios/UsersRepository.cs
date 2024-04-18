@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
+using UsersAPI.RepositoryAbstractions;
 
 namespace UsersAPI.Repositorios;
 
-public class UsersRepository
+public class UsersRepository : IUsersRepository
 {
     private readonly ApplicationDbContext _context;
 
