@@ -27,9 +27,6 @@ public class UsersController : ControllerBase
         this.updateUserService = updateUserService;
         this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
-
-        this.updateUserService = new UpdateUserService(context);
-
         this.deleteUserService = new DeleteUserService(context);
     }
 
@@ -74,17 +71,14 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-
-        if (!UserExists(id))
+        
+        var result =  await deleteUserService.DeleteUser(id));
+        if (result)
         {
-            return NotFound("Usuario no encontrado.");
+            return Ok("Usuario eliminado exitosamente.");
         }
-
-        var user = await _context.Users.FindAsync(id);
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-
-        return Ok("Usuario eliminado exitosamente.");
+        
+        return NotFound("Usuario no encontrado.");
     }
     
     private bool UserExists(int id)
