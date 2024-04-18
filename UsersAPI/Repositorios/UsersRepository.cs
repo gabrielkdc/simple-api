@@ -67,7 +67,13 @@ public class UsersRepository : IUsersRepository
     }
     public async Task<List<User>> GetUsers(string orderBy)
     {
+        var query = GetOrderByQuery(orderBy);
 
+        return await query.ToListAsync();
+    }
+
+    public IQueryable<User> GetOrderByQuery(string orderBy)
+    {
         IQueryable<User> query = _context.Users;
 
         switch (orderBy.ToLower())
@@ -80,7 +86,7 @@ public class UsersRepository : IUsersRepository
                 break;
         }
 
-        return await query.ToListAsync();
+        return query;
     }
 
     public async Task<bool> DeleteUser(int id)
@@ -93,5 +99,12 @@ public class UsersRepository : IUsersRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public string GenerateSQL()
+    {
+        return string.Empty;
+    }
+    
+    
 
 }

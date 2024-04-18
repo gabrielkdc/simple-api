@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UsersAPI.Data;
+using UsersAPI.Enums;
 using UsersAPI.Models;
 using UsersAPI.ServiceAbstractions;
 using UsersAPI.Services.Users;
@@ -43,11 +44,11 @@ public class UsersController : ControllerBase
 
         switch (registerResult)
         {
-            case 0 :
+            case ResultCode.INVALID_INPUT :
                 return BadRequest("La contraseña no puede estar vacía.");
-            case 1:
+            case ResultCode.RECORDS_CONFLICT:
                 return Conflict("El nombre de usuario ya est� en uso.");
-            case 2:
+            case ResultCode.SUCCESS:
                 return Ok(user);
             default:
                 return StatusCode(500, "Error al registrar el usuario.");
