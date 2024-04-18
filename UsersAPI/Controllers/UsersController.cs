@@ -19,6 +19,7 @@ public class UsersController : ControllerBase
 
     private GetUserByIdService getUserByIdService;
 
+    private DeleteUserService deleteUserService;
     public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService)
     {
         _context = context;
@@ -26,6 +27,10 @@ public class UsersController : ControllerBase
         this.updateUserService = updateUserService;
         this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
+
+        this.updateUserService = new UpdateUserService(context);
+
+        this.deleteUserService = new DeleteUserService(context);
     }
 
     [HttpPost]

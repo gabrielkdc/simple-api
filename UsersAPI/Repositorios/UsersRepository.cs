@@ -82,4 +82,16 @@ public class UsersRepository : IUsersRepository
 
         return await query.ToListAsync();
     }
+
+    public async Task<bool> DeleteUser(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+            return false;
+
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }
