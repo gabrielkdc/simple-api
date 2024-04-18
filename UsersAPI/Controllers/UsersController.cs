@@ -72,7 +72,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> DeleteUser(int id)
     {
         
-        var result =  await deleteUserService.DeleteUser(id));
+        var result =  await deleteUserService.DeleteUser(id);
         if (result)
         {
             return Ok("Usuario eliminado exitosamente.");
