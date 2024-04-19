@@ -15,20 +15,35 @@ public class UsersController : ControllerBase
 
     private IRegisterUserService registerUserService;
     private IUpdateUserService updateUserService;
+    private IGetUserByIdService getUserByIdService;
     private GetUsersService getUserService;
     private GetUserByUsernameService getUserByUsernameService;
-
-    private GetUserByIdService getUserByIdService;
-
     private DeleteUserService deleteUserService;
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService)
+
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
+    {
+        _context = context;
+        this.registerUserService = registerUserService;
+        this.getUserByIdService = new GetUserByIdService(context);
+        this.getUserByIdService = getUserByIdService;
+
+        this.deleteUserService = new DeleteUserService(context);
+        this.getUserByUsernameService = new GetUserByUsernameService(context);
+
+        this.updateUserService = new UpdateUserService(context);
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
+    {
+        _context = context;
+        this.registerUserService = registerUserService;
+        this.getUserByIdService = new GetUserByIdService(context);
+
+        this.updateUserService = new UpdateUserService(context);
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
     {
         _context = context;
         this.registerUserService = registerUserService;
         this.updateUserService = updateUserService;
         this.getUserService = new GetUsersService(context);
-        this.getUserByIdService = new GetUserByIdService(context);
-        this.deleteUserService = new DeleteUserService(context);
     }
 
     [HttpPost]
@@ -43,7 +58,7 @@ public class UsersController : ControllerBase
         
 
         switch (registerResult)
-        {
+    public async Task<IActionResult> GetUserById(int id)
             case ResultCode.INVALID_INPUT :
                 return BadRequest("La contraseña no puede estar vacía.");
             case ResultCode.RECORDS_CONFLICT:
@@ -58,8 +73,9 @@ public class UsersController : ControllerBase
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
-    {
-        var user = await getUserByIdService.GetUserById(id);
+
+        var result =  await deleteUserService.DeleteUser(id);
+        if (result)
 
         if (user == null)
         {
@@ -72,9 +88,8 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        
-        var result =  await deleteUserService.DeleteUser(id);
-        if (result)
+
+        if (!UserExists(id))
         {
             return Ok("Usuario eliminado exitosamente.");
         }

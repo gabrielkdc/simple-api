@@ -1,16 +1,18 @@
 ﻿using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services.Users
 {
-    public class GetUserByIdService
+    public class GetUserByIdService : IGetUserByIdService
     {
-        private UsersRepository usersRepository;
+        private IUsersRepository usersRepository;
 
-        public GetUserByIdService(ApplicationDbContext context)
+        public GetUserByIdService(IUsersRepository userRepository)
         {
-            this.usersRepository = new UsersRepository(context);
+            this.usersRepository = userRepository;
         }
 
         public async Task<User> GetUserById(int id)

@@ -10,11 +10,11 @@ using UsersAPI.Models;
 
 namespace UsersAPI.Test;
 
-public class GetUserDetailsTests : IClassFixture<WebApplicationFactory<IApiMarker>>, IAsyncLifetime
+public class GetUserById : IClassFixture<WebApplicationFactory<IApiMarker>>, IAsyncLifetime
 {
     private readonly HttpClient httpClient;
     readonly List<int> createdUsersIds = new List<int>();
-    public GetUserDetailsTests(WebApplicationFactory<IApiMarker> webApplicationFactory)
+    public GetUserById(WebApplicationFactory<IApiMarker> webApplicationFactory)
     {
         httpClient = webApplicationFactory.CreateClient();
     }
@@ -66,7 +66,6 @@ public class GetUserDetailsTests : IClassFixture<WebApplicationFactory<IApiMarke
 
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
-        createdUsersIds.Add(UserId);
     }
 
     public Task InitializeAsync()
