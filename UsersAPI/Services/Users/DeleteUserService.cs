@@ -1,16 +1,18 @@
 ﻿using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services.Users
 {
-    public class DeleteUserService
+    public class DeleteUserService : IDeleteUserService
     {
-        private UsersRepository usersRepository;
+        private IUsersRepository usersRepository;
 
-        public DeleteUserService(ApplicationDbContext context)
+        public DeleteUserService(IUsersRepository usersRepository)
         {
-            this.usersRepository = new UsersRepository(context);
+            this.usersRepository = usersRepository;
         }
 
         public async Task<bool> DeleteUser(int id)

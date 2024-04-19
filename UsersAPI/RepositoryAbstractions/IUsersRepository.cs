@@ -13,4 +13,5 @@ public interface IUsersRepository
 
     Task<User> GetUserByUsername(string username);
     Task<List<User>> GetUsers(string orderBy);
+    Task<bool> DeleteUser(int id);
 }
