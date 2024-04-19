@@ -27,4 +27,10 @@ public class MockUsersRepository : IUsersRepository
         var user = new User();
         return Task.FromResult(user);
     }
+
+    public Task<User> GetUserByUsername(string username)
+    {
+        throw new NotImplementedException();
+    }
+
 }

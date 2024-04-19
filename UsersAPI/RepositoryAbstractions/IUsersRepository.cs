@@ -11,4 +11,5 @@ public interface IUsersRepository
     Task<User> GetUserById(int id);
 
 
+    Task<User> GetUserByUsername(string username);
 }
