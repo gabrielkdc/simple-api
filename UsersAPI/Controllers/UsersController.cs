@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UsersAPI.Data;
+using UsersAPI.Enums;
 using UsersAPI.Models;
 using UsersAPI.ServiceAbstractions;
 using UsersAPI.Services.Users;
@@ -14,20 +15,19 @@ public class UsersController : ControllerBase
 
     private IRegisterUserService registerUserService;
     private IUpdateUserService updateUserService;
-    private GetUsersService getUserService;
+    private IGetUserByIdService getUserByIdService;
     private IGetUserByUsernameService getUserByUsernameService;
 
-    private GetUserByIdService getUserByIdService;
-
+    private GetUsersService getUserService;
     private DeleteUserService deleteUserService;
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByUsernameService getUserByUsernameService)
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService, IGetUserByUsernameService getUserByUsernameService)
     {
         _context = context;
         this.registerUserService = registerUserService;
         this.updateUserService = updateUserService;
         this.getUserByUsernameService = getUserByUsernameService;
+        this.getUserByIdService = getUserByIdService;
         this.getUserService = new GetUsersService(context);
-        this.getUserByIdService = new GetUserByIdService(context);
         this.deleteUserService = new DeleteUserService(context);
     }
 
@@ -44,11 +44,11 @@ public class UsersController : ControllerBase
 
         switch (registerResult)
         {
-            case 0 :
+            case ResultCode.INVALID_INPUT :
                 return BadRequest("La contraseña no puede estar vacía.");
-            case 1:
+            case ResultCode.RECORDS_CONFLICT:
                 return Conflict("El nombre de usuario ya est� en uso.");
-            case 2:
+            case ResultCode.SUCCESS:
                 return Ok(user);
             default:
                 return StatusCode(500, "Error al registrar el usuario.");
@@ -57,7 +57,7 @@ public class UsersController : ControllerBase
     
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserDetails(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
         var user = await getUserByIdService.GetUserById(id);
 
@@ -95,11 +95,11 @@ public class UsersController : ControllerBase
 
         switch (updateResult)
         {
-            case 0:
+            case ResultCode.INVALID_INPUT:
                 return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-            case 1:
+            case ResultCode.RECORD_NOT_FOUND:
                 return NotFound("Usuario no encontrado.");
-            case 2:
+            case ResultCode.SUCCESS:
                 return Ok(user);
             default:
                 return BadRequest();

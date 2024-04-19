@@ -22,6 +22,11 @@ public class MockUsersRepository : IUsersRepository
     {
         return Task.FromResult(true);
     }
+    public Task<User> GetUserById(int id)
+    {
+        var user = new User();
+        return Task.FromResult(user);
+    }
 
     public Task<User> GetUserByUsername(string username)
     {

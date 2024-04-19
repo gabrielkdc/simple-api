@@ -186,7 +186,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         {
             Name = "Nombre",
             Password = "12345678",
-            Username = "TestUser1"
+            Username = "TestUser5"
         };
         // Act -- call the method to create the user
 
@@ -197,7 +197,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var deleteResponse = await httpClient.DeleteAsync($"Users/{userId}");
 
         // Act
-        var response = await httpClient.GetAsync($"Users/username/{userId}");
+        var response = await httpClient.GetAsync($"Users/username/{newUser.Username}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
