@@ -8,4 +8,5 @@ public interface IUsersRepository
     Task<bool> UserExists(string username);
     Task<bool> UserExists(int id);
     Task<bool> Update(User user);
+    Task<List<User>> GetUsers(string orderBy);
 }

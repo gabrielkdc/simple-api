@@ -22,4 +22,9 @@ public class MockUsersRepository : IUsersRepository
     {
         return Task.FromResult(true);
     }
+
+    public Task<List<User>> GetUsers(string orderBy)
+    {
+        throw new NotImplementedException();
+    }
 }

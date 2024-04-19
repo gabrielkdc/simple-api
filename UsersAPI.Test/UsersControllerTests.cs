@@ -249,7 +249,7 @@ public class UsersControllerTests : IClassFixture<WebApplicationFactory<IApiMark
         var newUser = new User
         {
             Name = "TestUser",
-            Username = "testuser",
+            Username = "testuser3",
             Password = "123456"
         };
         var result = await httpClient.PostAsJsonAsync("Users", newUser);
