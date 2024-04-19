@@ -1,8 +1,9 @@
-    using Microsoft.AspNetCore.Mvc;
-    using UsersAPI.Data;
-    using UsersAPI.Models;
-    using UsersAPI.ServiceAbstractions;
-    using UsersAPI.Services.Users;
+using Microsoft.AspNetCore.Mvc;
+using UsersAPI.Data;
+using UsersAPI.Enums;
+using UsersAPI.Models;
+using UsersAPI.ServiceAbstractions;
+using UsersAPI.Services.Users;
 
     namespace UsersAPI.Controllers;
 
@@ -10,23 +11,22 @@
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
         private IRegisterUserService registerUserService;
         private IUpdateUserService updateUserService;
-        private IGetUsersService getUserService;
-        private GetUserByUsernameService getUserByUsernameService;
-
-        private GetUserByIdService getUserByIdService;
-
+        private IGetUserByIdService getUserByIdService;
+        private IGetUserByUsernameService getUserByUsernameService;
+        private IGetUsersService getUsersService;
         private DeleteUserService deleteUserService;
-        public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUsersService getUsersService)
+
+        public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService,
+            IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService,
+            IGetUserByUsernameService getUserByUsernameService, IGetUsersService getUsersService)
         {
-            _context = context;
             this.registerUserService = registerUserService;
             this.updateUserService = updateUserService;
-            this.getUserService = getUsersService;
-            this.getUserByIdService = new GetUserByIdService(context);
+            this.getUserByUsernameService = getUserByUsernameService;
+            this.getUserByIdService = getUserByIdService;
+            this.getUsersService = getUsersService;
             this.deleteUserService = new DeleteUserService(context);
         }
 
@@ -39,22 +39,22 @@
             }
 
             var registerResult = await registerUserService.CreateNewUser(user);
-        
+
 
             switch (registerResult)
             {
-                case 0 :
+                case ResultCode.INVALID_INPUT:
                     return BadRequest("La contraseña no puede estar vacía.");
-                case 1:
+                case ResultCode.RECORDS_CONFLICT:
                     return Conflict("El nombre de usuario ya est� en uso.");
-                case 2:
+                case ResultCode.SUCCESS:
                     return Ok(user);
                 default:
                     return StatusCode(500, "Error al registrar el usuario.");
             }
         }
-    
-    
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserDetails(int id)
         {
@@ -67,24 +67,20 @@
 
             return Ok(user);
         }
-    
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-        
-            var result =  await deleteUserService.DeleteUser(id);
+
+            var result = await deleteUserService.DeleteUser(id);
             if (result)
             {
                 return Ok("Usuario eliminado exitosamente.");
             }
-        
+
             return NotFound("Usuario no encontrado.");
         }
-    
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
+
 
 
         [HttpPut("{id}")]
@@ -94,15 +90,15 @@
 
             switch (updateResult)
             {
-                case 0:
+                case ResultCode.INVALID_INPUT:
                     return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-                case 1:
+                case ResultCode.RECORD_NOT_FOUND:
                     return NotFound("Usuario no encontrado.");
-                case 2:
+                case ResultCode.SUCCESS:
                     return Ok(user);
                 default:
                     return BadRequest();
-            }   
+            }
         }
 
 
@@ -111,7 +107,7 @@
         {
             try
             {
-                var getUsersResult = await getUserService.GetUsers(orderBy);
+                var getUsersResult = await getUsersService.GetUsers(orderBy);
                 return Ok(getUsersResult);
             }
             catch (Exception ex)
@@ -130,10 +126,8 @@
             {
                 return Ok(getUserResult);
             }
-            else
-            {
-                return NotFound("El usuario no encontrado");
-            }     
+
+            return NotFound("El usuario no encontrado");
         }
     }
     
