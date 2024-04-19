@@ -15,16 +15,17 @@ public class UsersController : ControllerBase
     private IRegisterUserService registerUserService;
     private IUpdateUserService updateUserService;
     private GetUsersService getUserService;
-    private GetUserByUsernameService getUserByUsernameService;
+    private IGetUserByUsernameService getUserByUsernameService;
 
     private GetUserByIdService getUserByIdService;
 
     private DeleteUserService deleteUserService;
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService)
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByUsernameService getUserByUsernameService)
     {
         _context = context;
         this.registerUserService = registerUserService;
         this.updateUserService = updateUserService;
+        this.getUserByUsernameService = getUserByUsernameService;
         this.getUserService = new GetUsersService(context);
         this.getUserByIdService = new GetUserByIdService(context);
         this.deleteUserService = new DeleteUserService(context);

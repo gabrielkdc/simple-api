@@ -15,7 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IRegisterUserService, RegisterUserService>();
 builder.Services.AddScoped<IUpdateUserService, UpdateUserService>();
+builder.Services.AddScoped<IGetUserByUsernameService, GetUserByUsernameService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+
 
 var app = builder.Build();
 
