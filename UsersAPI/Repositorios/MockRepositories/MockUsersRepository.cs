@@ -33,4 +33,9 @@ public class MockUsersRepository : IUsersRepository
         throw new NotImplementedException();
     }
 
+
+    public Task<List<User>> GetUsers(string orderBy)
+    {
+        throw new NotImplementedException();
+    }
 }

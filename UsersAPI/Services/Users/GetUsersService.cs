@@ -2,15 +2,17 @@
 using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services.Users;
-    public class GetUsersService
+    public class GetUsersService : IGetUsersService
     {
-        private UsersRepository usersRepository;
+        private readonly IUsersRepository usersRepository;
 
-        public GetUsersService(ApplicationDbContext context)
+        public GetUsersService(IUsersRepository usersRepository)
         {
-            this.usersRepository = new UsersRepository(context);
+            this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
         public async Task<List<User>> GetUsers(string orderBy)
