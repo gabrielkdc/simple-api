@@ -16,18 +16,19 @@ using UsersAPI.Services.Users;
         private IGetUserByIdService getUserByIdService;
         private IGetUserByUsernameService getUserByUsernameService;
         private IGetUsersService getUsersService;
-        private DeleteUserService deleteUserService;
+        private IDeleteUserService deleteUserService;
 
-        public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService,
+        public UsersController( IRegisterUserService registerUserService,
             IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService,
-            IGetUserByUsernameService getUserByUsernameService, IGetUsersService getUsersService)
+            IGetUserByUsernameService getUserByUsernameService, IGetUsersService getUsersService,
+            IDeleteUserService deleteUserService)
         {
             this.registerUserService = registerUserService;
             this.updateUserService = updateUserService;
             this.getUserByUsernameService = getUserByUsernameService;
             this.getUserByIdService = getUserByIdService;
             this.getUsersService = getUsersService;
-            this.deleteUserService = new DeleteUserService(context);
+            this.deleteUserService = deleteUserService;
         }
 
         [HttpPost]

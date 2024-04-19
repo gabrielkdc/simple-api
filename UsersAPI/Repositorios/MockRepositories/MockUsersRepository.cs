@@ -38,4 +38,8 @@ public class MockUsersRepository : IUsersRepository
     {
         throw new NotImplementedException();
     }
+    public Task<bool> DeleteUser(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
