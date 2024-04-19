@@ -15,20 +15,19 @@ public class UsersController : ControllerBase
 
     private IRegisterUserService registerUserService;
     private IUpdateUserService updateUserService;
+    private IGetUserByIdService getUserByIdService;
     private GetUsersService getUserService;
     private GetUserByUsernameService getUserByUsernameService;
-
-    private GetUserByIdService getUserByIdService;
-
     private DeleteUserService deleteUserService;
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService)
+    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
     {
         _context = context;
         this.registerUserService = registerUserService;
         this.updateUserService = updateUserService;
+        this.getUserByIdService = getUserByIdService;
         this.getUserService = new GetUsersService(context);
-        this.getUserByIdService = new GetUserByIdService(context);
         this.deleteUserService = new DeleteUserService(context);
+        this.getUserByUsernameService = new GetUserByUsernameService(context);
     }
 
     [HttpPost]
@@ -57,7 +56,7 @@ public class UsersController : ControllerBase
     
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserDetails(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
         var user = await getUserByIdService.GetUserById(id);
 
@@ -95,11 +94,11 @@ public class UsersController : ControllerBase
 
         switch (updateResult)
         {
-            case 0:
+            case ResultCode.INVALID_INPUT:
                 return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-            case 1:
+            case ResultCode.RECORD_NOT_FOUND:
                 return NotFound("Usuario no encontrado.");
-            case 2:
+            case ResultCode.SUCCESS:
                 return Ok(user);
             default:
                 return BadRequest();
