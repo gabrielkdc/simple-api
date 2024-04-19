@@ -53,18 +53,19 @@ public class GetUserById : IClassFixture<WebApplicationFactory<IApiMarker>>, IAs
         {
             Name = "Nombre",
             Password = "1234567",
-            Username = "Username2"
+            Username = "Username1"
         };
         await httpClient.PostAsJsonAsync("Users", newUser);
-        var UserId = newUser.Id;
+        var userId = newUser.Id;
 
         // Act call the method to be tested
 
-        var result = await httpClient.GetAsync($"/Users/{UserId}");
+        var result = await httpClient.GetAsync($"/Users/{userId}");
 
         // Asert -- Validate the Result
 
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        createdUsersIds.Add(userId);
 
     }
 

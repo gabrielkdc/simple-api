@@ -19,31 +19,15 @@ public class UsersController : ControllerBase
     private GetUsersService getUserService;
     private GetUserByUsernameService getUserByUsernameService;
     private DeleteUserService deleteUserService;
-
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
-    {
-        _context = context;
-        this.registerUserService = registerUserService;
-        this.getUserByIdService = new GetUserByIdService(context);
-        this.getUserByIdService = getUserByIdService;
-
-        this.deleteUserService = new DeleteUserService(context);
-        this.getUserByUsernameService = new GetUserByUsernameService(context);
-
-        this.updateUserService = new UpdateUserService(context);
-    public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
-    {
-        _context = context;
-        this.registerUserService = registerUserService;
-        this.getUserByIdService = new GetUserByIdService(context);
-
-        this.updateUserService = new UpdateUserService(context);
     public UsersController(ApplicationDbContext context, IRegisterUserService registerUserService, IUpdateUserService updateUserService, IGetUserByIdService getUserByIdService)
     {
         _context = context;
         this.registerUserService = registerUserService;
         this.updateUserService = updateUserService;
+        this.getUserByIdService = getUserByIdService;
         this.getUserService = new GetUsersService(context);
+        this.deleteUserService = new DeleteUserService(context);
+        this.getUserByUsernameService = new GetUserByUsernameService(context);
     }
 
     [HttpPost]
@@ -58,7 +42,7 @@ public class UsersController : ControllerBase
         
 
         switch (registerResult)
-    public async Task<IActionResult> GetUserById(int id)
+        {
             case ResultCode.INVALID_INPUT :
                 return BadRequest("La contraseña no puede estar vacía.");
             case ResultCode.RECORDS_CONFLICT:
@@ -72,10 +56,9 @@ public class UsersController : ControllerBase
     
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserDetails(int id)
-
-        var result =  await deleteUserService.DeleteUser(id);
-        if (result)
+    public async Task<IActionResult> GetUserById(int id)
+    {
+        var user = await getUserByIdService.GetUserById(id);
 
         if (user == null)
         {
@@ -88,8 +71,9 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-
-        if (!UserExists(id))
+        
+        var result =  await deleteUserService.DeleteUser(id);
+        if (result)
         {
             return Ok("Usuario eliminado exitosamente.");
         }
@@ -110,11 +94,11 @@ public class UsersController : ControllerBase
 
         switch (updateResult)
         {
-            case 0:
+            case ResultCode.INVALID_INPUT:
                 return BadRequest("ID del usuario no coincide con el ID proporcionado en la URL.");
-            case 1:
+            case ResultCode.RECORD_NOT_FOUND:
                 return NotFound("Usuario no encontrado.");
-            case 2:
+            case ResultCode.SUCCESS:
                 return Ok(user);
             default:
                 return BadRequest();
