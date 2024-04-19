@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
+using UsersAPI.Enums;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
 using UsersAPI.RepositoryAbstractions;
@@ -16,21 +17,21 @@ namespace UsersAPI.Services.Users
             this.usersRepository = usersRepository;
         }
 
-        public async Task<int> UpdateUser(int id, User user)
+        public async Task<ResultCode> UpdateUser(int id, User user)
         {
             if (id != user.Id)
             {
-                return 0;
+                return ResultCode.INVALID_INPUT;
             }
 
             if (! await usersRepository.UserExists(id))
             {
-                return 1;
+                return ResultCode.RECORD_NOT_FOUND;
             }
             else
             {
                 await usersRepository.Update(user);
-                return 2;
+                return ResultCode.SUCCESS;
             }
         }
     }

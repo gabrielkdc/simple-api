@@ -10,17 +10,17 @@ using UsersAPI.Models;
 
 namespace UsersAPI.Test;
 
-public class GetUserDetailsTests : IClassFixture<WebApplicationFactory<IApiMarker>>, IAsyncLifetime
+public class GetUserById : IClassFixture<WebApplicationFactory<IApiMarker>>, IAsyncLifetime
 {
     private readonly HttpClient httpClient;
     readonly List<int> createdUsersIds = new List<int>();
-    public GetUserDetailsTests(WebApplicationFactory<IApiMarker> webApplicationFactory)
+    public GetUserById(WebApplicationFactory<IApiMarker> webApplicationFactory)
     {
         httpClient = webApplicationFactory.CreateClient();
     }
 
     [Fact]
-    public async Task ShouldReturnNotfoun_WhenTheUserDoesNotExists()
+    public async Task GetUserById_ShouldReturnNotfoun_WhenTheUserDoNotExists()
     {
         // Arrange -- prepare the test data
 
@@ -41,6 +41,31 @@ public class GetUserDetailsTests : IClassFixture<WebApplicationFactory<IApiMarke
         // Asert -- Validate the Result
 
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+
+    }
+
+    [Fact]
+    public async Task GetUserById_ShouldReturnOk_WhenTheUserIsFound()
+    {
+        // Arrange -- prepare the test data
+
+        var newUser = new User
+        {
+            Name = "Nombre",
+            Password = "1234567",
+            Username = "Username1"
+        };
+        await httpClient.PostAsJsonAsync("Users", newUser);
+        var userId = newUser.Id;
+
+        // Act call the method to be tested
+
+        var result = await httpClient.GetAsync($"/Users/{userId}");
+
+        // Asert -- Validate the Result
+
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        createdUsersIds.Add(userId);
 
     }
 
