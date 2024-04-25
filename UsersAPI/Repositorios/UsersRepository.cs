@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.RepositoryAbstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 
 namespace UsersAPI.Repositorios;
 
