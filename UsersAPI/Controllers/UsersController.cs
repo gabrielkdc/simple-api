@@ -1,8 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UsersAPI.Data;
-using UsersAPI.Models;
-using UsersAPI.ServiceAbstractions;
-using UsersAPI.Services.Users;
+    using UsersAPI.Data;
+    using UsersAPI.Models;
+    using UsersAPI.ServiceAbstractions;
+    using UsersAPI.Services.Users;
 
 namespace UsersAPI.Controllers;
 
@@ -87,10 +88,11 @@ public class UsersController : ControllerBase
     }
 
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, User user)
-    {
-        var updateResult = await updateUserService.UpdateUser(id, user);
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(int id, User user)
+        {
+            var updateResult = await updateUserService.UpdateUser(id, user);
 
         switch (updateResult)
         {
