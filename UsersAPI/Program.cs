@@ -5,6 +5,9 @@ using UsersAPI.RepositoryAbstractions;
 using UsersAPI.ServiceAbstractions;
 using UsersAPI.Services;
 using UsersAPI.Services.Users;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using UsersAPI.Services.Authentification;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +26,29 @@ builder.Services.AddScoped<IGetUsersService, GetUsersService>();
 builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();    
 
-
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "issuer",
+        ValidAudience = "audience",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("key"))
+    };
+});
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 

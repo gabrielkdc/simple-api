@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UsersAPI.Data;
 using UsersAPI.Enums;
@@ -85,6 +86,7 @@ using UsersAPI.Services.Users;
 
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser(int id, User user)
         {
             var updateResult = await updateUserService.UpdateUser(id, user);
