@@ -2,25 +2,23 @@
 using UsersAPI.Data;
 using UsersAPI.Models;
 using UsersAPI.Repositorios;
+using UsersAPI.RepositoryAbstractions;
+using UsersAPI.ServiceAbstractions;
 
 namespace UsersAPI.Services.Users
 {
-    public class GetUserByUsernameService
+    public class GetUserByUsernameService : IGetUserByUsernameService
     {
-        private UsersRepository usersRepository;
+        private readonly IUsersRepository usersRepository;
 
-        public GetUserByUsernameService(ApplicationDbContext context)
+        public GetUserByUsernameService(IUsersRepository usersRepository)
         {
-            usersRepository = new UsersRepository(context);
+            this.usersRepository = usersRepository;
         }
 
         public async Task<User> GetUserByUsername(string username)
         {
-
-            var existingUser = await usersRepository.UserExists(username);
-
-            var user = await usersRepository.GetUserByUsername(username);
-            return user;
+            return await usersRepository.GetUserByUsername(username);
         }
     }
 }
