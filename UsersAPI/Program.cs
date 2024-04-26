@@ -9,8 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using UsersAPI.Services.Authentification;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -24,7 +27,10 @@ builder.Services.AddScoped<IGetUserByIdService, GetUserByIdService>();
 builder.Services.AddScoped<IGetUserByUsernameService, GetUserByUsernameService>();
 builder.Services.AddScoped<IGetUsersService, GetUsersService>();
 builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();    
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+
+builder.Services.AddSingleton(configuration);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -38,17 +44,17 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "issuer",
-        ValidAudience = "audience",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("key"))
+        ValidIssuer = configuration["JwtSettings:Issuer"],
+        ValidAudience = configuration["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["HashSecret:value"]))
     };
 });
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
